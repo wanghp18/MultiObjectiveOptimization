@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Optimization Demo</title>
+<!-- Bootstrap Core CSS -->
+<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link href="../bower_components/metisMenu/dist/metisMenu.min.css"
+	rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link
+	href="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"
+	rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link
+	href="../bower_components/datatables-responsive/css/responsive.dataTables.scss"
+	rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="../bower_components/morrisjs/morris.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="../bower_components/font-awesome/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+<style type="text/css">
+#progress {
+	display: none;
+}
+</style>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+</head>
+<h1>Building Design Optimization Results Panel Demo</h1>
+<body>
+	<div id="wrapper">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">Weili Web v0.1</a>
+			</div>
+			<div class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li class="sidebar-search">
+							<div class="input-group custom-search-form">
+								<input type="text" class="form-control" placeholder="Search...">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</li>
+						<li><a href="index.html"><i class="fa fa-dashboard fa-fw"></i>Main
+								Page</a></li>
+						<li><a href="#"><i class="fa fa-dashboard fa-fw"></i>Optimization<span
+								class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li><a href="optimization.html">MOO Concepts</a></li>
+								<li><a href="optdemo.html">Building Opt Demo</a></li>
+							</ul></li>
+						<li><a href="#"><i class="fa fa-dashboard fa-fw"></i>EnergyPlus Automation<span 
+						class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li><a href="hvacauto.html"><i class="fa fa-table fa-fw"></i>HVAC
+								AutoGeneration</a></li>
+								<li><a href="baselineauto.html"><i class="fa fa-table fa-fw"></i>ASHRAE 90.1 Baseline
+								AutoGeneration</a></li>		
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">Optimization Demo</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<form enctype="multipart/form-data" id="upload_form">
+						<table>
+							<tr>
+								<td>Please upload EnergyPlus File here</td>
+								<td><input name="uploadIDF" type="file" id="uploadIDF"
+									required></td>
+							</tr>
+							<tr>
+								<td>Please upload the EnergyPlus HTML Output here</td>
+								<td><input name="uploadHTML" type="file" id="uploadHTML"
+									required>
+							</tr>
+							<tr>
+								<td><input type="button" class="btn btn-primary"
+									value="Calculate" /></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">Pareto Front Curve and BaseCase
+							</div>
+							<div class="panel body">
+								<div id="chart_div" class='chart'></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<h3 id="opt_indicator">Indicator</h3>
+                                	<div class="alert alert-success" id="oc_indicator">Operation Cost Reduced!</div>
+                                	<div class="alert alert-warning" id="fc_indicator">First Cost Increased!</div>
+                                	<div class="alert alert-danger" id="lcc_indicator">Life Cycle Cost Increased!</div>
+                           		 </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="panel panel-default">
+							<div class="panel-heading">End-Use Energy Consumption
+								Comparison</div>
+							<div id='morris-bar-chart'></div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="panel panel-default">
+							<div class="panel-heading">Case Cost Performance</div>
+							<div id='case_fc_chart'></div>
+							<div id='case_oc_chart'></div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+							Case Information
+							</div>
+							<div class="panel-body">
+								<div class="dataTable_wrapper">
+									<table id="case_table" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>Case Number</th>
+												<th>Wall</th>
+												<th>Roof</th>
+												<th>Window</th>
+												<th>Light</th>
+												<th>Daylight Control</th>
+												<th>HVAC</th>
+											</tr>
+										</thead>
+										<tbody id="case_table_body">
+										</tbody>
+									</table>				
+								</div>
+								<p>
+									<button type="button" class="btn btn-success" data-toggle='tooltip'
+									title="Download the selected Case's IDF file">Download</button>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<!-- jQuery -->
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+	<!-- Metis Menu Plugin JavaScript -->
+	<script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+	<!-- Morris Charts JavaScript -->
+	<script src="../bower_components/raphael/raphael-min.js"></script>
+	<script src="../bower_components/morrisjs/morris.min.js"></script>
+	<script src="../demo/optData.js"></script>
+
+	<!-- DataTables JavaScript -->
+	<script
+		src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script
+		src="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+	<!-- Custom Theme JavaScript -->
+	<script src="../dist/js/sb-admin-2.js"></script>	
+	<script type="text/javascript">
+		google.charts.load('current', {
+			'packages' : [ 'corechart' ]
+		});
+		google.charts.setOnLoadCallback(drawChart);
+		google.charts.setOnLoadCallback(drawPieChartforFC);
+		google.charts.setOnLoadCallback(drawPieChartforOC);
+
+		var selectedCase = 1;
+		var previousSelection = [2324763,2286433];
+		var previousCase = "Base Case";
+		var costData = [
+		            	[2324763,2286433],
+		            	[1945480,1309218],
+		            	[1808939,2114405],
+		            	[2160938,1260953],
+		            	[2256787,1287545],
+		            	[1810763,2181651]
+		            	]
+		
+		var designs = [
+		               ["Baseline","Concrete Block Walls","Metal Deck Roof","Double Clear","T8","Off","VAV"],
+		               ["Optimized 1","EIFS", "Sloped Frame Roof","Triple Glazing","LED","On","VRF"],
+		               ["Optimized 2","Precast and CIP Wall","Concrete Roof","Triple Glazing","LED","On","VRF"],
+		               ["Optimized 3","Stud Walls","Wood Deck","Heat Reflective Clear","LED","Off","VRF"],
+		               ["Optimized 4","Concrete Block Walls","Concrete Roof","Triple Glazing","T5","On","VRF"],
+		               ["Optimized 5","EIFS","Sloped Frame Roof","Triple Glazing","LED","On","VRF"]
+		               ]	
+		
+		function drawPieChartforFC(){
+			var index = selectedCase;
+			
+			var data = new google.visualization.arrayToDataTable([
+    		["Genre","Base","Optimized 1","Optimized 2","Optimized 3","Optimized 4","Optimized 5"],
+    		["Wall",319135.26,91643.06,394842.59,152138.25,53309.81,100157.82],
+    		["Roof",61690.44,245733.41,267197.61,31430.51,39668.30,37261.51],
+    		["Window",147050.09,291440.79,291440.79,291440.79,216649.80,147050.09],
+    		["Light",84058.71,39360.96,370456.07,39360.96,16794.92,370456.07],
+    		["Daylight",0,17420,17420,0,0,17420],
+    		["HVAC",1674498.5,623619.78,773047.94,746582.5,961122.17,1509305.5]
+   			 ])
+			var view = new google.visualization.DataView(data);
+			view.setColumns([0,index]);
+			var options={
+				title:"First Cost Components"
+			}
+			
+			var chart = new google.visualization.PieChart(document.getElementById('case_fc_chart'));
+			
+			chart.draw(view, options);
+		}
+		
+		function drawPieChartforOC(){
+			var index = selectedCase;
+
+			var data = new google.visualization.arrayToDataTable([
+			           ["Genre","Base","Optimized 1","Optimized 2","Optimized 3","Optimized 4","Optimized 5"],
+			           ["Energy",2223472.08,1849919.13,1777859.29,2051998.97,2077450.44,2173299.04],
+			           ["Maintenance",47553.00,51002.60,42026.63,42226.63,42226.63,42226.63],
+			           ["Replacement",53737.61,68017.58,28677.46,70518.07,79260.89,79260.89]
+			           ])
+			var view = new google.visualization.DataView(data);
+			view.setColumns([0,index]);
+			var options={
+				title:"Operation Cost Components"
+			}
+			
+			var chart = new google.visualization.PieChart(document.getElementById('case_oc_chart'));
+			
+			chart.draw(view, options);
+		}
+		
+		function drawChart() {
+			var data = new google.visualization.DataTable();
+			data.addColumn('number', 'Operation Cost');
+			data.addColumn('number', 'Base Case');
+			data.addColumn({
+				type : 'string',
+				role : 'tooltip'
+			})
+			data.addColumn('number', "Optimized Cases")
+			data.addColumn({
+				type : 'string',
+				role : 'tooltip'
+			})
+			data.addRows([
+							[2324763,2286433,"Concrete Block Wall, Metal Deck Roof,Double Clear,T8,Off,VAV",
+									null, null ],
+							[ 1945480, null, null, 1309218,
+									"EIFS, Sloped Frame Roof,Triple Glazing,LED,On,VRF" ],
+							[ 1800880, null, null, 2152940,
+									"Precast and CIP Wall,Concrete Roof,Triple Glazing,LED,On,DOAS+VRF" ],
+							[ 2278456, null, null, 1237045,
+									"Stud Walls, Wood Deck,Heat Reflective Clear,LED,Off,VRF" ],
+							[ 1891623, null, null, 1643671,
+									"Concrete Block Walls,Concrete Roof,Triple Glazing,T5,Off,VRF" ],
+							[ 2074458, null, null, 1258314,
+									"EIFS,Sloped Frame Roof,Triple Glazing,LED,On,DOAS+VRF" ], ]);
+			var options = {
+				title : 'Operation Cost Vs. First Cost',
+				series : {
+					0 : {
+						axis : 'operation cost'
+					},
+					1 : {
+						axis : 'first cost'
+					}
+				},
+				hAxis : {
+					title : 'First Cost ($)',
+					minValue : 1200000,
+					maxValue : 2200000
+				},
+				vAxis : {
+					title : 'Operation Cost ($)',
+					minValue : 1500000,
+					maxValue : 2200000
+				},
+				tooltip : {
+					isHtml : true
+				},
+				legend : {
+					position : 'bottom',
+				},
+				pointSize: 10
+			};
+
+			var chart = new google.visualization.ScatterChart(document
+					.getElementById('chart_div'));
+			
+			//the select handler. call the chart's getselection() method
+			function selectHandler(){
+				var selectedItem = chart.getSelection()[0];
+				if(selectedItem){
+					selectedCase = selectedItem.row + 1;
+					drawPieChartforFC();
+					drawPieChartforOC();
+					
+					costRow = selectedItem.row;
+					var indicatorArray = [];
+					var selectedData = costData[costRow];
+					var previousLCC=0;
+					var newLCC=0;
+					for(var i=0; i<selectedData.length; i++){
+						var change = (selectedData[i]-previousSelection[i])/previousSelection[i] * 100;
+						previousLCC += previousSelection[i];
+						newLCC += selectedData[i];
+						indicatorArray.push(change);
+						previousSelection[i] = selectedData[i];
+					}
+					var lccChange = (newLCC-previousLCC)/previousLCC * 100;
+					indicatorArray.push(lccChange);
+					updateIndicator(indicatorArray);
+					updateIndicatorText(costRow);
+				}
+			}
+			
+			google.visualization.events.addListener(chart,'select',selectHandler);
+			chart.draw(data, options);
+		}
+		
+		function updateIndicatorText(index){
+			var currentCase;
+			if(index==0){
+				currentCase = "Base Case";
+			}else{
+				currentCase = "Case " + index;
+			}
+			document.getElementById("opt_indicator").innerHTML = "Indicator: Compare " + previousCase + " to " + currentCase;
+			previousCase = currentCase;
+		}
+		
+		function updateIndicator(data){
+			var indicatorArray = data;
+			var oc_change = data[0].toFixed(0);
+			var fc_change = data[1].toFixed(0);
+			var lcc_change = data[2].toFixed(0);
+			
+			var attr_oc = getAttributeValue(oc_change);
+			var attr_fc = getAttributeValue(fc_change);
+			var attr_lcc = getAttributeValue(lcc_change);
+			
+			var text_oc = getTextValue(oc_change);
+			var text_fc = getTextValue(fc_change);
+			var text_lcc = getTextValue(lcc_change);
+			
+			var oc_element = document.getElementById("oc_indicator");
+			var fc_element = document.getElementById("fc_indicator");
+			var lcc_element = document.getElementById("lcc_indicator");
+			
+			oc_element.className = attr_oc;
+			fc_element.className = attr_fc;
+			lcc_element.className = attr_lcc;
+			
+			oc_element.innerHTML = "Operation Cost is "+text_oc + Math.abs(oc_change) + "%";
+			fc_element.innerHTML = "First Cost is "+text_fc + Math.abs(fc_change) + "%";
+			lcc_element.innerHTML = "Life Cycle Cost is " + text_lcc + Math.abs(lcc_change) + "%";
+		}
+		
+		function getTextValue(data){
+			if(data<0){
+				return "reduced by: ";
+			}else if(data>0){
+				return "increased by: ";
+			}else{
+				return "unchanged: ";
+			}
+		}
+		
+		function getAttributeValue(data){
+			if(data<0){
+				return "alert alert-success";
+			}else if(data>0){
+				return "alert alert-danger";
+			}else {
+				return "alert alert-info";
+			}
+		}
+		
+		$('[data-toggle="tooltip"]').tooltip();
+		
+		$('#case_table').DataTable({
+			data:designs,
+			responsive: true,
+			"autoWidth":false
+		});
+		
+		$(window).resize(function(){
+			  drawChart();
+			  drawPieChartforFC();
+			  drawPieChartforOC();
+			});
+	</script>
+</body>
+</html>

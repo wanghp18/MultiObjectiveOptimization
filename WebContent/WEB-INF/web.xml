@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
-  <display-name>Optimization</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-  </welcome-file-list>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns="http://java.sun.com/xml/ns/javaee" 
+		xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+		id="WebApp_ID" 
+		version="2.5">
+	<display-name>My Page</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<servlet>
+		<servlet-name>RequestHandler</servlet-name>
+		<servlet-class>test.servlet.RequestHandler</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RequestHandler</servlet-name>
+		<url-pattern>/pages/RequestHandler</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<servlet-class>test.servlet.FileUploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FileUploadServlet</servlet-name>
+		<url-pattern>/pages/uploadFile</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>HVACGeneratorServlet</servlet-name>
+		<servlet-class>test.servlet.HVACGeneratorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HVACGeneratorServlet</servlet-name>
+		<url-pattern>/pages/generateHVAC</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>BaselineAutoServlet</servlet-name>
+		<servlet-class>test.servlet.BaselineAutoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BaselineAutoServlet</servlet-name>
+		<url-pattern>/pages/generateBaseline</url-pattern>
+	</servlet-mapping>
 </web-app>

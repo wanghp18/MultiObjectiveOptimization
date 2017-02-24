@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>baseline auto</title>
+<!-- Bootstrap Core CSS -->
+<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- MetisMenu CSS -->
+<link href="../bower_components/metisMenu/dist/metisMenu.min.css"
+	rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link
+	href="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"
+	rel="stylesheet">
+
+<!-- DataTables Responsive CSS -->
+<link
+	href="../bower_components/datatables-responsive/css/responsive.dataTables.scss"
+	rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="../bower_components/font-awesome/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css">
+<style type="text/css">
+#progress {
+	display: none;
+}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<!-- jQuery -->
+<!-- Bootstrap Core JavaScript -->
+<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+<!-- DataTables JavaScript -->
+<script
+	src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script
+	src="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="../dist/js/sb-admin-2.js"></script>
+</head>
+<h1>ASHRAE90.1 Performance Rating Method EnergyPlus Model
+	Automation</h1>
+<body>
+	<div id="wrapper">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation"
+			style="margin-bottom: 0">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">Weili Web v0.1</a>
+			</div>
+			<div class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li class="sidebar-search">
+							<div class="input-group custom-search-form">
+								<input type="text" class="form-control" placeholder="Search...">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+							</div>
+						</li>
+						<li><a href="index.html"><i class="fa fa-dashboard fa-fw"></i>Main
+								Page</a></li>
+						<li><a href="#"><i class="fa fa-dashboard fa-fw"></i>Optimization<span
+								class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li><a href="optimization.html">MOO Concepts</a></li>
+								<li><a href="optdemo.html">Building Opt Demo</a></li>
+							</ul></li>
+						<li><a href="#"><i class="fa fa-dashboard fa-fw"></i>EnergyPlus
+								Automation<span class="fa arrow"></span></a>
+							<ul class="nav nav-second-level">
+								<li><a href="hvacauto.html"><i
+										class="fa fa-table fa-fw"></i>HVAC AutoGeneration</a></li>
+								<li><a href="baselineauto.html"><i
+										class="fa fa-table fa-fw"></i>ASHRAE 90.1 Baseline
+										AutoGeneration</a></li>
+							</ul></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">Baseline Automation on EnergyPlus</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3>Instruction of using baseline automation system</h3>
+						</div>
+						<div class="panel-body">
+							<div class="panel-group" id="accordion">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion"
+												href="#collapseOne">Introduction</a>
+										</h4>
+									</div>
+									<div id="collapseOne" class="panel-collapse collapse in">
+										<div class="panel-body">
+											<p>The ASHRAE 90.1 2007 performance rating method
+												automation system is developed with goal of minimizing the
+												manual process of creating ASHRAE 90.1 building energy
+												baseline model for code compliance, building energy
+												performance comparison and building system optimization.</p>
+											<p>At the current state, this system is undergoing a
+												series of alpha tests before entering production phase. This
+												web-site provide a platform to support alpha tests. The
+												current weather file is fix to Baltimore TMY3 and the
+												building type is fix to office. In the future development,
+												such features will be release step-by-step.</p>
+										</div>
+									</div>
+
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion"
+												href="#collapseTwo"> Model Preparation </a>
+										</h4>
+									</div>
+									<div id="collapseTwo" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>A design EnergyPlus V8.3 model is required. This model
+												can be generated from DesignBuilder V4.5 and above.</p>
+											<p>However, there are three things needs to be carefully
+												taken care of:</p>
+											<ul>
+												<li>Please make sure that IDF block/zone separator is
+													%. You can set this through: Program Option, EnergyPlus,
+													IDF Options, IDF Object Naming and Replacement characters</li>
+												<li>Please set the simulation time to 1/1-12/31, this
+													is a feature that hasn't been implemented in the system</li>
+												<li>Please make sure the IDF file is cleaned and
+													sorted. To do this, you could open the exported IDF file
+													in IdfEditor. Manually add an empty object under any object
+													(e.g. Version), and delete it. Afterwards, save the file. Through this process
+													IdfEditor will help you sort the file.</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a data-toggle="collapse" data-parent="#accordion"
+												href="#collapseThree"> Upload File </a>
+										</h4>
+									</div>
+									<div id="collapseThree" class="panel-collapse collapse">
+										<div class="panel-body">
+											<p>Click Choose File to upload your Idf file. Then select
+												a climate zone you wish to specify. After done both actions,
+												click submit. The website will froze for a certain amount of
+												time depends on the size of your model. After the generation
+												is done, a table will appear with results. and you should be
+												able to download the generated baseline file.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-12">
+									<h2>Uploads</h2>
+									<form enctype="multipart/form-data" target="target"
+										id="submit_inputs">
+										<table>
+											<tr>
+												<td>Please upload EnergyPlus File here :</td>
+												<td><input name="uploadIDF" type="file" id="uploadIDF"
+													required></td>
+											</tr>
+											<tr>
+												<td>Climate Zone:<select name="Select Climate"
+													id="select_climatezone">
+														<option value="Climate Zone 1 A">Climate Zone 1 A</option>
+														<option value="Climate Zone 1 B">Climate Zone 1 B</option>
+														<option value="Climate Zone 2 A">Climate Zone 2 A</option>
+														<option value="Climate Zone 2 B">Climate Zone 2 B</option>
+														<option value="Climate Zone 3 A">Climate Zone 3 A</option>
+														<option value="Climate Zone 3 B">Climate Zone 3 B</option>
+														<option value="Climate Zone 3 C">Climate Zone 3 C</option>
+														<option value="Climate Zone 4 A">Climate Zone 4 A</option>
+														<option value="Climate Zone 4 B">Climate Zone 4 B</option>
+														<option value="Climate Zone 4 C">Climate Zone 4 C</option>
+														<option value="Climate Zone 5 A">Climate Zone 5 A</option>
+														<option value="Climate Zone 5 B">Climate Zone 5 B</option>
+														<option value="Climate Zone 5 C">Climate Zone 5 C</option>
+														<option value="Climate Zone 6 A">Climate Zone 6 A</option>
+														<option value="Climate Zone 6 B">Climate Zone 6 B</option>
+														<option value="Climate Zone 7 A">Climate Zone 7 A</option>
+														<option value="Climate Zone 7 B">Climate Zone 7 B</option>
+														<option value="Climate Zone 8 A">Climate Zone 8 A</option>
+														<option value="Climate Zone 1 B">Climate Zone 8 B</option>
+												</select></td>
+											</tr>
+											<tr>
+												<td><input type="button" class="btn btn-primary"
+													value="Submit" id="upload"></td>
+											</tr>
+										</table>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Baseline Model Information
+						</div>
+						<div class="panel-body">
+							<input type="button" class="btn btn-primary"
+								value="Download" id="base_download" onclick="DownloadIDF()">						
+							<div class="table-responsive">
+								<table class="table" id="base_info">
+									<thead>
+										<tr>
+											<th>Item</th>
+											<th>Output</th>
+											<th>Value</th>
+											<th>Unit</th>
+										</tr>
+									</thead>
+									<tbody id="base_info_body">
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function() {
+			$('#uploadIDF').change(function() {
+				var file = this.files[0];
+				var name = file.name;
+				var size = file.size;
+				var type = file.type;
+				if (!name.match(/(.*?)+\.idf/i)) {
+					alert("Please upload a idf file");
+					$(this).val("");
+				}
+			});
+
+			$('#upload').click(function() {
+				var formData = new FormData($('#submit_inputs')[0]);
+				$.ajax({
+					url : './generateBaseline',
+					type : 'POST',
+					beforeSend : function() {
+					},
+					success : function(data) {
+						console.log(data);
+						drawBaselineInfoTable(data);
+					},
+					error : function() {
+						alert("Please Check Your uploaded files");
+					},
+					data : formData,
+					processData : false,//required for formData as JQuery converts obj to String as default
+					cache : false,
+					contentType : false,
+					async : false
+				});
+			});
+		});
+		
+		function drawBaselineInfoTable(jsonData){
+			var result = jsonData['results']
+			var rows = Object.keys(result).length;
+			var dataSet = [];
+			
+			for(var i=0; i<rows; i++){
+				var row = []
+				row.push(result[i+""].Item, result[i+""].Output, result[i+""].Value, result[i+""].Unit);
+				dataSet.push(row);
+			}
+			
+			table = $("#base_info").DataTable({
+				data : dataSet,
+				responsive:true,
+				"autoWidth":false
+			});
+		}
+		
+		function DownloadIDF(){
+			$.ajax({
+				url:'./generateBaseline?message=' + "download",
+				type: 'POST',
+				success: function(data){
+					var path = data["path"];
+					if(path == "none"){
+						alert('You have not start your simulation yet!');
+					}else{
+						window.open('./generateBaseline?path=' + path);						
+					}
+				},
+				data: 'json',
+				async: false
+			});
+		}
+	</script>
+</body>
+</html>
