@@ -10,6 +10,7 @@ package eplus.data;
  * @author Weili
  *
  */
+@SuppressWarnings("unused")
 public class DesignBuilderThermalZone implements ThermalZone {
     private final static int blockIndex = 0;
     private final static int zoneTypeIndex = 1;
@@ -24,7 +25,7 @@ public class DesignBuilderThermalZone implements ThermalZone {
     // private final static int zoneHVACIndex = 3;
 
     private final static String seperator = "%";
-    private final static String blockseperator = ":";
+	private final static String blockseperator = ":";
 
     private String block;
     private String zoneType;

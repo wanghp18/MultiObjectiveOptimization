@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 
 import eplus.data.ThermalZone;
 
+@SuppressWarnings("unused")
 public class HVACSizing {
 
     private static Document doc;

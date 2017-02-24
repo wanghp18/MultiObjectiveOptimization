@@ -26,11 +26,11 @@ public class OptimizationMain {
 
     private String problem_name;
     private String algorithm_name;
-    HashMap parameters; // Operator parameters;
+    private HashMap<String, Double> parameters; // Operator parameters;
     
     private int populationSize=100;
 
-    HashMap<String, ArrayList<Double>> results;
+    private HashMap<String, ArrayList<Double>> results;
 
     public OptimizationMain(String pn, String an)
 	    throws JMException, ClassNotFoundException {
@@ -88,7 +88,7 @@ public class OptimizationMain {
 	algorithm.setInputParameter("maxEvaluations", 25000);
 
 	// Mutation (Real variables)
-	parameters = new HashMap();
+	parameters = new HashMap<>();
 	parameters.put("probability", 1.0 / problem.getNumberOfVariables());
 	parameters.put("distributionIndex", 20.0);
 	mutation = MutationFactory.getMutationOperator("PolynomialMutation",
@@ -113,13 +113,13 @@ public class OptimizationMain {
 	algorithm.setInputParameter("maxEvaluations", 25000);
 
 	// Mutation and Crossover for Real codification
-	parameters = new HashMap();
+	parameters = new HashMap<>();
 	parameters.put("probability", 0.9);
 	parameters.put("distributionIndex", 20.0);
 	crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover",
 		parameters);
 
-	parameters = new HashMap();
+	parameters = new HashMap<>();
 	parameters.put("probability", 1.0 / problem.getNumberOfVariables());
 	parameters.put("distributionIndex", 20.0);
 	mutation = MutationFactory.getMutationOperator("PolynomialMutation",
@@ -143,13 +143,13 @@ public class OptimizationMain {
 	algorithm.setInputParameter("maxEvaluations", 25000);
 
 	// Mutation and Crossover for Real codification
-	parameters = new HashMap();
+	parameters = new HashMap<>();
 	parameters.put("probability", 0.9);
 	parameters.put("distributionIndex", 20.0);
 	crossover = CrossoverFactory.getCrossoverOperator("SBXCrossover",
 		parameters);
 
-	parameters = new HashMap();
+	parameters = new HashMap<>();
 	parameters.put("probability", 1.0 / problem.getNumberOfVariables());
 	parameters.put("distributionIndex", 20.0);
 	mutation = MutationFactory.getMutationOperator("PolynomialMutation",

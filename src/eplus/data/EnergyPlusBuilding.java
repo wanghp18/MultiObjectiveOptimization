@@ -10,6 +10,7 @@ import java.util.Set;
 import baseline.util.ClimateZone;
 import eplus.data.IdfReader.ValueNode;
 
+@SuppressWarnings("unused")
 public class EnergyPlusBuilding {
 
     /**
